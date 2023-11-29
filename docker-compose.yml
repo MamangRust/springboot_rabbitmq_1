@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  order_service:
+    build:
+      context: ./order_service  # Path to Order Service Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rabbitmq  # Make sure RabbitMQ is running before Order Service starts
+
+  product_service:
+    build:
+      context: ./product_service  # Path to Product Service Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - rabbitmq  # Make sure RabbitMQ is running before Product Service starts
+
+  rabbitmq:
+    image: rabbitmq:3.12.8-alpine
+    ports:
+      - "5672:5672"  # AMQP port
+      - "15672:15672"  # RabbitMQ management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
